@@ -3,14 +3,11 @@ from api.models import User
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
-    # contactNo = serializers.DecimalField(decimal_places=0, max_digits=10, read_only=True)
-    # imgFront = serializers.ImageField()
-    # imgBack = serializers.ImageField()
 
     class Meta:
         model = User
         fields = ['contactNo', 'firstName', 'middleName', 'lastName', 'dob', 'gender', 'houseNo', 'streetName',
-                  'localityName', 'cityName', 'countryName', 'pinCode']#, 'idImageFront', 'idImageBack']
+                  'localityName', 'cityName', 'countryName', 'pinCode']
 
 
 class UserVerificationSerializer(serializers.ModelSerializer):

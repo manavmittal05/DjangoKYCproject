@@ -1,23 +1,8 @@
-# name_cimg = convert_to_grey(img[250:315, 390:700])
-# dob_cimg = convert_to_grey(img[300:380, 790:1070])
-# gender_cimg = convert_to_grey(img[370:440, 540:700])
-# address_cimg = convert_to_grey(img[220:440, 640:1240])
-
 import cv2
 import pytesseract
 import numpy as np
 import matplotlib.pyplot as plt
 from datetime import datetime
-
-
-class ID_ROI():
-    class CCCD(object):
-        rois = {
-            "name": (390, 250, 700, 315),
-            "dob": (790, 300, 1070, 380),
-            "gender": (540, 370, 700, 440),
-            "address": (635, 220, 1245, 440)
-        }
 
 
 def display_img(cvImg):
@@ -29,21 +14,24 @@ def display_img(cvImg):
 
 
 def cropImageRoi(image, roi):
-    roi_cropped = image[
-                  roi[1]: roi[3], roi[0]: roi[2]
-                  ]
+    roi_cropped = image[roi[1]: roi[3], roi[0]: roi[2]]
     return roi_cropped
 
 
 def preprocessing_image(img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    gray = cv2.multiply(gray, 1.95)
-    return gray
+    return cv2.multiply(gray, 1.95)
 
 
-def exctractDtaFromID(imgF, imgB):
+def extractDtaFromID(imgF, imgB):
+    rois = {
+        "name": (390, 250, 700, 315),
+        "dob": (790, 300, 1070, 380),
+        "gender": (540, 370, 700, 440),
+        "address": (635, 220, 1245, 440)
+    }
     data = {}
-    for key, roi in ID_ROI.CCCD.rois.items():
+    for key, roi in rois.items():
         if key != 'address':
             crop_img = cropImageRoi(imgF, roi)
         else:
@@ -95,11 +83,11 @@ def do_kyc(User):
     finalimgF = createFinalImage(img2F, baseImgF)
     finalimgB = createFinalImage(img2B, baseImgB)
 
-    user_data = exctractDtaFromID(finalimgF, finalimgB)
+    user_data = extractDtaFromID(finalimgF, finalimgB)
 
     name_verified = False
     dob_verified = False
-    gender_verfied = False
+    gender_verified = False
 
     name_from_data = user_data['name']
     nameSample = [User.firstName, User.middleName, User.lastName]
@@ -120,14 +108,14 @@ def do_kyc(User):
         dob_verified = True
 
     if User.gender.lower() == user_data['gender'].lower():
-        gender_verfied = True
+        gender_verified = True
 
-    if name_verified and dob_verified and gender_verfied:
+    if name_verified and dob_verified and gender_verified:
         User.kycVerified = True
     return {
         'contactNo': User.contactNo,
         'kycVerified': User.kycVerified,
         'nameVerified': name_verified,
-        'genderVerified': gender_verfied,
+        'genderVerified': gender_verified,
         'dobVerified': dob_verified
     }

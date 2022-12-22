@@ -1,8 +1,9 @@
 from django.db import models
 
+
 # Create your models here.
 class User(models.Model):
-    contactNo = models.DecimalField(decimal_places=0, max_digits=10, primary_key=True)
+    contactNo = models.BigIntegerField(primary_key=True)
     firstName = models.CharField(max_length=50, blank=False)
     middleName = models.CharField(max_length=50, blank=True)
     lastName = models.CharField(max_length=50, blank=True)
@@ -13,7 +14,7 @@ class User(models.Model):
     localityName = models.CharField(max_length=50)
     cityName = models.CharField(max_length=20)
     countryName = models.CharField(max_length=20)
-    pinCode = models.DecimalField(decimal_places=0, max_digits=6)
+    pinCode = models.IntegerField()
     kycVerified = models.BooleanField(default=False)
     idImageFront = models.ImageField(upload_to='UserID_front')
     idImageBack = models.ImageField(upload_to='UserID_back')
